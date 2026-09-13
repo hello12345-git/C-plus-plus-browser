@@ -28,9 +28,10 @@ public:
             "window#nova_browser_window { background: #eef4f8; color: #142335; }"
             "#browser_root { background: #eef4f8; border-radius: 16px; box-shadow: 0 0 24px rgba(0,0,0,0.28); }"
             "#topbar { background: #ffffff; color: #142335; border-radius: 12px; padding: 4px; }"
-            "button { background: linear-gradient(135deg, #dceaff, #eef6ff); color: #173755; border-radius: 10px; padding: 8px 16px; border: 1px solid #b7d4f2; font-weight: bold; }"
-            "button:hover { background: linear-gradient(135deg, #a8d4ff, #eaf6ff); color: #102a47; }"
-            "entry { background: #f7faff; color: #1a2440; border-radius: 10px; padding: 10px; font-size: 14px; border: 1px solid #bfd2e8; }"
+            "button { background: linear-gradient(135deg, #dceaff, #eef6ff); color: #173755; border-radius: 10px; padding: 8px 16px; border: 1px solid #b7d4f2; font-weight: bold; transition: background 240ms ease, color 240ms ease, box-shadow 240ms ease; }"
+            "button:hover { background: linear-gradient(135deg, #a8d4ff, #eaf6ff); color: #102a47; box-shadow: 0 4px 12px rgba(130,170,220,0.34); }"
+            "entry { background: #f7faff; color: #1a2440; border-radius: 10px; padding: 10px; font-size: 14px; border: 1px solid #bfd2e8; transition: box-shadow 260ms ease; }"
+            "entry:focus { box-shadow: 0 0 0 3px rgba(130,200,255,0.4); }"
             "label { color: #182d4d; }"
             "#webview_host { background: white; border-radius: 8px; border: 1px solid #d4dce8; }"
             "#statusbar { background: #071120; color: #b6caff; font-size: 11px; border-radius: 10px; padding: 4px; }"
@@ -71,7 +72,7 @@ public:
         m_topbar.pack_start(m_go_button, Gtk::PACK_SHRINK);
         m_topbar.pack_start(m_settings_button, Gtk::PACK_SHRINK);
 
-        m_address_entry.set_placeholder_text("Search or enter website");
+        m_address_entry.set_placeholder_text("Search or enter a website");
         m_address_entry.set_text("");
         m_address_entry.signal_activate().connect(sigc::mem_fun(*this, &BrowserWindow::on_go_clicked));
 
@@ -129,7 +130,6 @@ private:
         }
 
         if (input.find("://") == std::string::npos) {
-            // Treat plain text as search query.
             std::string q = input;
             std::string url = "https://duckduckgo.com/?q=" + percent_encode(q);
             load_url(url);
@@ -218,6 +218,7 @@ body {
   letter-spacing: -3px;
   color: var(--blue);
   text-align: center;
+  animation: logoFloat 1400ms ease-in-out infinite alternate;
 }
 .logo span:nth-child(1) { color: #4285f4; }
 .logo span:nth-child(2) { color: #34a853; }
@@ -270,6 +271,11 @@ body {
 }
 .shortcuts div { padding: 12px; border-radius: 8px; }
 .shortcuts div:hover { background: #eaf2ff; }
+.searchbox { animation: riseIn 420ms ease both; }
+.shortcut-fade { animation: fadeSlide 560ms ease both; }
+@keyframes logoFloat { from { transform: translateY(-2px); } to { transform: translateY(-8px); } }
+@keyframes riseIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeSlide { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 700px) { .logo { font-size: 48px; } }
 </style>
 </head>
@@ -278,7 +284,7 @@ body {
   <div class='logo'><span>N</span><span>O</span><span>V</span><span>A</span></div>
   <div class='searchbox'>
     <svg width='22' height='22' viewBox='0 0 24 24' fill='none'><path d='M10.8 18.6a7.8 7.8 0 1 1 0-15.6 7.8 7.8 0 0 1 0 15.6z' stroke='#6a7286' stroke-width='2'/><path d='m16.2 16.2 4 4' stroke='#6a7286' stroke-width='2'/></svg>
-    <input id='q' type='text' value='' autocomplete='off'/>
+    <input id='q' type='text' value='' placeholder='Search the web or enter a site' autocomplete='off'/>
     <button onclick='goSearch()'>Search</button>
   </div>
   <div class='buttonrow'>
@@ -286,7 +292,7 @@ body {
     <button onclick='location.href="https://search.nova.local"'>Feeling Lucky</button>
   </div>
   <div class='shortcuts'>
-    <div>Docs</div><div>Images</div><div>News</div><div>Maps</div>
+    <div class='shortcut-fade'>Docs</div><div class='shortcut-fade'>Images</div><div class='shortcut-fade'>News</div><div class='shortcut-fade'>Maps</div>
   </div>
 </div>
 <script>
@@ -452,4 +458,3 @@ int main(int argc, char** argv) {
     BrowserWindow win;
     return app->run(win);
 }
-
