@@ -18,3 +18,7 @@ g++ -std=c++17 -O2 -o browser_gui browser.cpp \
 ```
 xvfb-run -a ./browser_gui
 ```
+or
+```
+./browser_gui
+```
