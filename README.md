@@ -9,7 +9,13 @@ sudo apt-get install -y libgtkmm-3.0-dev libwebkit2gtk-4.0-dev xvfb
 ### 1.
 
 ```
-g++ -std=c++17 -O2 -o browser_gui browser.cpp \
+g++ -std=c++17 -O2 -o browser_gui browserv1.cpp \
+  $(pkg-config --cflags --libs gtkmm-3.0 webkit2gtk-4.0)
+```
+or
+
+```
+g++ -std=c++17 -O2 -o browser_gui browserv2.cpp \
   $(pkg-config --cflags --libs gtkmm-3.0 webkit2gtk-4.0)
 ```
 
